@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import MessageList from './components/chat/MessageList';
 import Chatkit from '@pusher/chatkit';
 import './App.css';
 import { tokenUrl, instanceLocator } from './config/chat/config';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      messages: []
+    }
+  }
+
   componentDidMount() {
     const chatManager = new Chatkit.ChatManager({
       instanceLocator,
@@ -23,6 +30,9 @@ class App extends Component {
         hooks: {
           onNewMessage: message => {
             console.log('message: ', message.text);
+            this.setState({
+              messages: [...this.state.messages, message]
+            });
           }
         }
       })
@@ -32,7 +42,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        
+        <MessageList messages={this.state.messages} />        
       </div>
     );
   }
