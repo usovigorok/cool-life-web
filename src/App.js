@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MessageList from './components/chat/MessageList';
 import SendMessageForm from './components/chat/SendMessageForm';
 import Chatkit from '@pusher/chatkit';
+import RoomList from './components/chat/RoomList';
 import './App.css';
 import { tokenUrl, instanceLocator } from './config/chat/config';
 
@@ -9,7 +10,9 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      messages: []
+      messages: [],
+      joinableRooms: [],
+      joinedRooms: []
     }
     this.sendMessage = this.sendMessage.bind(this);
   }
@@ -27,6 +30,15 @@ class App extends Component {
     chatManager.connect()
     .then(currentUser => {
       this.currentUser = currentUser;
+      this.currentUser.getJoinableRooms()
+      .then(joinableRooms => {
+        this.setState({
+          joinableRooms,
+          joinedRooms: this.currentUser.rooms
+        })
+      })
+      .catch(err => console.log('error on joinableRooms: ', err));
+
       this.currentUser.subscribeToRoom({
         roomId: 15099322,
         messageLimit: 100,
@@ -40,6 +52,7 @@ class App extends Component {
         }
       })
     })
+    .catch(err => console.log('error on connecting: ', err));
   }
 
   sendMessage(text) {
@@ -52,6 +65,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <RoomList rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} />
         <MessageList messages={this.state.messages} />
         <SendMessageForm sendMessage={this.sendMessage} />
       </div>
