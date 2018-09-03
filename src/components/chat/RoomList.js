@@ -12,8 +12,12 @@ class RoomList extends React.Component {
                     {orderedRooms.map(room => {
 						const active = this.props.roomId === room.id ? "active" : "";
                         return (
-                            <li key={room.id} className={"room " + active}>
-                                <a href="#"># {room.name}</a>
+                            <li key={room.id} className="room">
+                                <a 
+                                    onClick={() => this.props.subscribeToRoom(room.id)}
+                                    href="#">
+                                    # {room.name}
+                                </a>
                             </li>
                         )
                     })}
