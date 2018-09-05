@@ -13,7 +13,7 @@ class RoomList extends React.Component {
                         debugger;
 						const active = that.props.roomId === room.id ? "active" : "";
                         return (
-                            <li key={room.id} className="room">
+                            <li key={room.id} className={"room " + active}>
                                 <a 
                                     onClick={() => this.props.subscribeToRoom(room.id)}
                                     href="#">
